@@ -1,6 +1,6 @@
 (() => {
   const els = {
-    q: document.querySelector("#q"),
+    q: document.querySelector("#q"),      // なくてもOKにする
     base: document.querySelector("#base"),
     tag: document.querySelector("#tag"),
     reset: document.querySelector("#reset"),
@@ -9,23 +9,25 @@
   };
 
   let DATA = [];
+  const state = { q: "", base: "", tag: "" };
 
-  function normalize(v){
+  function normalize(v) {
     return (v ?? "").toString().trim().toLowerCase();
   }
 
-  function uniq(arr){
+  function uniq(arr) {
     return [...new Set(arr.filter(Boolean))];
   }
 
-  function optionize(selectEl, values, placeholder){
+  function optionize(selectEl, values, placeholder) {
+    if (!selectEl) return;
     selectEl.innerHTML = "";
     const opt0 = document.createElement("option");
     opt0.value = "";
     opt0.textContent = placeholder;
     selectEl.appendChild(opt0);
 
-    for(const v of values){
+    for (const v of values) {
       const opt = document.createElement("option");
       opt.value = v;
       opt.textContent = v;
@@ -33,160 +35,147 @@
     }
   }
 
-  function includesLoose(haystack, needle){
-    if(!needle) return true;
-    return haystack.includes(needle);
+  function setCount(n) {
+    if (els.count) els.count.textContent = `${n} 件`;
   }
 
-  function buildIndex(item){
-    const parts = [
+  function safeText(v) {
+    return (v ?? "").toString();
+  }
+
+  function cardHTML(item) {
+    const name = safeText(item.name);
+    const base = safeText(item.base);
+    const roles = Array.isArray(item.role) ? item.role.join(" / ") : safeText(item.role);
+    const tags = Array.isArray(item.tags) ? item.tags : [];
+    const href = item.notionUrl || "#";
+    const thumb = (item.thumb || "").trim();
+
+    const tagHtml = tags
+      .map(t => `<span class="tag">${safeText(t)}</span>`)
+      .join("");
+
+    const thumbHtml = thumb
+      ? `<img src="${thumb}" alt="${name} の写真" loading="lazy" decoding="async" />`
+      : `<span class="muted" style="font-family:var(--mono);font-size:12px;opacity:.6;">no image</span>`;
+
+    return `
+      <a class="card" href="${href}" target="_blank" rel="noopener">
+        <div class="thumb">${thumbHtml}</div>
+        <div class="card-body">
+          <div class="name-row">
+            <h3 class="name">${name}</h3>
+            <span class="base">${base}</span>
+          </div>
+          <p class="roles">${roles}</p>
+          <div class="tags">${tagHtml}</div>
+        </div>
+      </a>
+    `.trim();
+  }
+
+  function matches(item, q) {
+    if (!q) return true;
+
+    const hay = [
       item.name,
       item.kana,
       item.base,
-      ...(item.tags || []),
-    ].map(normalize);
-    return parts.join(" / ");
+      ...(Array.isArray(item.role) ? item.role : []),
+      ...(Array.isArray(item.tags) ? item.tags : []),
+    ]
+      .map(normalize)
+      .join(" ");
+
+    return hay.includes(q);
   }
 
-  function sortItems(items){
-    const copy = [...items];
-    copy.sort((a,b)=>{
-      const ao = (a.order ?? 999999);
-      const bo = (b.order ?? 999999);
-      if(ao !== bo) return ao - bo;
+  function getFiltered() {
+    const q = state.q;
+    const base = state.base;
+    const tag = state.tag;
 
-      const ak = (a.kana || a.name || "");
-      const bk = (b.kana || b.name || "");
-      return ak.localeCompare(bk, "ja");
-    });
-    return copy;
+    return DATA
+      .filter(d => !base || d.base === base)
+      .filter(d => !tag || (Array.isArray(d.tags) && d.tags.includes(tag)))
+      .filter(d => matches(d, q))
+      .sort((a, b) => (a.order ?? 999999) - (b.order ?? 999999));
   }
 
-  function render(items){
-    els.grid.innerHTML = "";
-    const frag = document.createDocumentFragment();
+  function render() {
+    const list = getFiltered();
+    if (els.grid) els.grid.innerHTML = list.map(cardHTML).join("");
+    setCount(list.length);
+  }
 
-    for(const item of items){
-      const a = document.createElement("a");
-      a.className = "card";
-      a.href = item.notionUrl || "#";
-      a.target = "_blank";
-      a.rel = "noopener";
-
-      const thumb = document.createElement("div");
-      thumb.className = "thumb";
-
-      if(item.thumb){
-        const img = document.createElement("img");
-        img.src = item.thumb;
-        img.alt = `${item.name || ""} サムネイル`;
-        img.loading = "lazy";
-        thumb.appendChild(img);
-      }else{
-        const ph = document.createElement("div");
-        ph.textContent = "no image";
-        ph.style.fontSize = "12px";
-        ph.style.fontFamily = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace";
-        ph.style.color = "rgba(17,17,17,.35)";
-        thumb.appendChild(ph);
-      }
-
-      const body = document.createElement("div");
-      body.className = "card-body";
-
-      const nameRow = document.createElement("div");
-      nameRow.className = "name-row";
-
-      const name = document.createElement("h2");
-      name.className = "name";
-      name.textContent = item.name || "noname";
-
-      const base = document.createElement("span");
-      base.className = "base";
-      base.textContent = item.base || "";
-
-      nameRow.appendChild(name);
-      nameRow.appendChild(base);
-
-      const roles = document.createElement("p");
-      roles.className = "roles";
-      roles.textContent = (item.role || []).join(" / ");
-
-      const tags = document.createElement("div");
-      tags.className = "tags";
-      for(const t of (item.tags || []).slice(0, 6)){
-        const s = document.createElement("span");
-        s.className = "tag";
-        s.textContent = t;
-        tags.appendChild(s);
-      }
-
-      body.appendChild(nameRow);
-      if((item.role || []).length) body.appendChild(roles);
-      if((item.tags || []).length) body.appendChild(tags);
-
-      a.appendChild(thumb);
-      a.appendChild(body);
-      frag.appendChild(a);
+  function bindUI() {
+    // q は存在するときだけ有効
+    if (els.q) {
+      els.q.addEventListener("input", () => {
+        state.q = normalize(els.q.value);
+        render();
+      });
     }
 
-    els.grid.appendChild(frag);
-    els.count.textContent = `${items.length} 件`;
-  }
-
-  function apply(){
-    const q = normalize(els.q.value);
-    const base = els.base.value;
-    const tag = els.tag.value;
-
-    let items = DATA.filter(item=>{
-      const idx = buildIndex(item);
-      if(q && !includesLoose(idx, q)) return false;
-      if(base && item.base !== base) return false;
-      if(tag && !(item.tags || []).includes(tag)) return false;
-      return true;
-    });
-
-    items = sortItems(items);
-    render(items);
-  }
-
-  function wire(){
-    els.q.addEventListener("input", apply);
-    els.base.addEventListener("change", apply);
-    els.tag.addEventListener("change", apply);
-
-    els.reset.addEventListener("click", ()=>{
-      els.q.value = "";
-      els.base.value = "";
-      els.tag.value = "";
-      apply();
-    });
-  }
-
-  async function init(){
-    const url = "./data/creators.json?ts=" + Date.now();
-    const res = await fetch(url, { cache: "no-store" });
-
-    if(!res.ok){
-      throw new Error(`creators.json fetch failed: ${res.status} ${res.statusText} (${url})`);
+    if (els.base) {
+      els.base.addEventListener("change", () => {
+        state.base = els.base.value || "";
+        render();
+      });
     }
 
-    const text = await res.text();
-    DATA = JSON.parse(text);
+    if (els.tag) {
+      els.tag.addEventListener("change", () => {
+        state.tag = els.tag.value || "";
+        render();
+      });
+    }
 
-    const bases = uniq(DATA.map(d=>d.base));
-    const tags  = uniq(DATA.flatMap(d=>d.tags || []));
-
-    optionize(els.base, bases, "すべての拠点");
-    optionize(els.tag,  tags,  "すべてのTags");
-
-    wire();
-    apply();
+    if (els.reset) {
+      els.reset.addEventListener("click", () => {
+        state.q = "";
+        state.base = "";
+        state.tag = "";
+        if (els.q) els.q.value = "";
+        if (els.base) els.base.value = "";
+        if (els.tag) els.tag.value = "";
+        render();
+      });
+    }
   }
 
-  init().catch(err=>{
-    console.error(err);
-    els.count.textContent = "読み込みに失敗しました（data/creators.json を確認してね）";
-  });
+  async function init() {
+    try {
+      bindUI();
+
+      const res = await fetch("./data/creators.json", { cache: "no-store" });
+      if (!res.ok) throw new Error(`fetch failed: ${res.status}`);
+
+      const json = await res.json();
+      if (!Array.isArray(json)) throw new Error("creators.json must be an array");
+
+      DATA = json;
+
+      // options
+      const bases = uniq(DATA.map(d => d.base)).sort((a, b) => a.localeCompare(b, "ja"));
+      const tags = uniq(DATA.flatMap(d => (Array.isArray(d.tags) ? d.tags : []))).sort((a, b) =>
+        a.localeCompare(b, "ja")
+      );
+
+      optionize(els.base, bases, "すべての拠点");
+      optionize(els.tag, tags, "すべてのTags");
+
+      render();
+    } catch (e) {
+      console.error(e);
+      if (els.grid) {
+        els.grid.innerHTML =
+          `<p class="muted" style="padding:16px 0;">読み込みに失敗しました（data/creators.json を確認してね）</p>`;
+      }
+      setCount(0);
+    }
+  }
+
+  init();
 })();
+
