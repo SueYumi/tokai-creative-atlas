@@ -567,11 +567,11 @@ select:focus{
   background: rgba(255,255,255,.04);
   color: rgba(255,255,255,.78);
 }
-
+/* 1) フッダー色：紙になじむ（まずはこれに置き換え） */
 .site-footer{
-  border-top:1px solid var(--line);
+  border-top: 1px solid var(--rule2);
   padding: 18px 0 40px;
-  background: rgba(11,15,20,.35);
+  background: transparent; /* ←灰色帯を消す */
 }
 .muted{ color: var(--muted); font-size:12px; margin:0; }
 
