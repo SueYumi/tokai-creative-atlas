@@ -1,39 +1,27 @@
-// app.js（置き換え：肩書きフィルタ/並び替え無し、検索は Tags/拠点中心）
-const $ = (sel) => document.querySelector(sel);
+async function init(){
+  const url = "./data/creators.json?ts=" + Date.now();
+  const res = await fetch(url, { cache: "no-store" });
 
-const els = {
-  q: $("#q"),
-  base: $("#base"),
-  tag: $("#tag"),
-  reset: $("#reset"),
-  grid: $("#grid"),
-  count: $("#count"),
-};
-
-let DATA = [];
-
-function uniq(arr) {
-  return Array.from(new Set(arr.filter(Boolean))).sort((a,b)=>a.localeCompare(b,"ja"));
-}
-
-function optionize(selectEl, values, allLabel = "すべて") {
-  selectEl.innerHTML = "";
-  const optAll = document.createElement("option");
-  optAll.value = "";
-  optAll.textContent = allLabel;
-  selectEl.appendChild(optAll);
-
-  for (const v of values) {
-    const opt = document.createElement("option");
-    opt.value = v;
-    opt.textContent = v;
-    selectEl.appendChild(opt);
+  if(!res.ok){
+    throw new Error(`creators.json fetch failed: ${res.status} ${res.statusText} (${url})`);
   }
+
+  const text = await res.text(); // いったん文字で受ける（エラーが見やすい）
+  try{
+    DATA = JSON.parse(text);
+  }catch(e){
+    throw new Error("creators.json is not valid JSON: " + e.message);
+  }
+
+  const bases = uniq(DATA.map(d=>d.base));
+  const tags  = uniq(DATA.flatMap(d=>d.tags || []));
+
+  optionize(els.base, bases, "すべての拠点");
+  optionize(els.tag,  tags,  "すべてのTags");
+
+  wire();
+  apply();
 }
-
-function normalize(s){ return (s ?? "").toString().trim(); }
-
-function includesLoose(haystack, needle){
   if(!needle) return true;
   return haystack.toLowerCase().includes(needle.toLowerCase());
 }
