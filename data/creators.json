@@ -1,0 +1,35 @@
+[
+  {
+    "name": "テスト 太郎",
+    "kana": "てすとたろう",
+    "role": ["アーティスト"],
+    "base": "愛知",
+    "tags": ["参加型", "インスタレーション"],
+    "thumb": "",
+    "notionUrl": "https://www.notion.so/",
+    "order": 1,
+    "updated": "2025-12-26"
+  },
+  {
+    "name": "サンプル 花子",
+    "kana": "さんぷるはなこ",
+    "role": ["デザイナー", "編集"],
+    "base": "岐阜",
+    "tags": ["グラフィック", "出版"],
+    "thumb": "",
+    "notionUrl": "https://www.notion.so/",
+    "order": 2,
+    "updated": "2025-12-25"
+  },
+  {
+    "name": "デモ 次郎",
+    "kana": "でもじろう",
+    "role": ["建築", "リサーチャー"],
+    "base": "三重",
+    "tags": ["都市", "フィールドワーク"],
+    "thumb": "",
+    "notionUrl": "https://www.notion.so/",
+    "order": 3,
+    "updated": "2025-12-24"
+  }
+]
