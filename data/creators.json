@@ -1,25 +1,25 @@
 [
   {
-    "name": "テスト 太郎",
-    "kana": "てすとたろう",
-    "role": ["アーティスト"],
+    "name": "居石 有未",
+    "kana": "Yumi Sueishi",
+    "role": ["クリエイター"],
     "base": "愛知",
-    "tags": ["参加型", "インスタレーション"],
+    "tags": ["編集", "メディアアート", "絵画"],
     "thumb": "",
-    "notionUrl": "https://www.notion.so/",
+    "notionUrl": "https://tokai-creative-atlas.super.site/%e5%b1%85%e7%9f%b3%e6%9c%89%e6%9c%aa",
     "order": 1,
     "updated": "2025-12-26"
   },
   {
-    "name": "サンプル 花子",
-    "kana": "さんぷるはなこ",
-    "role": ["デザイナー", "編集"],
-    "base": "岐阜",
-    "tags": ["グラフィック", "出版"],
+    "name": "安藤 卓児",
+    "kana": "Takuji Ando",
+    "role": ["アーティスト"],
+    "base": "愛知",
+    "tags": ["絵画", "音楽", "インスタレーション"],
     "thumb": "",
-    "notionUrl": "https://www.notion.so/",
+    "notionUrl": "https://www.notion.so/2d3f2d2512b6802e8626d5494fec6085",
     "order": 2,
-    "updated": "2025-12-25"
+    "updated": "2025-12-26"
   },
   {
     "name": "デモ 次郎",
