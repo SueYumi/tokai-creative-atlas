@@ -74,7 +74,7 @@
     for(const item of items){
       const a = document.createElement("a");
       a.className = "card";
-      a.href = item.url || "#";
+      a.href = item.notionUrl || "#";
       a.target = "_blank";
       a.rel = "noopener";
 
