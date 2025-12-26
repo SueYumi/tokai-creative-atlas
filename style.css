@@ -174,9 +174,9 @@ select:focus{
 /* ===== Grid ===== */
 .grid{
   display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   padding: 14px 0 34px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
 }
 
 /* ===== Card (図鑑プレート) ===== */
