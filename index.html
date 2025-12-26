@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tokai Creative Atlas</title>
+  <meta name="description" content="東海エリアのクリエイターを見つけるアトラス" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>Tokai Creative Atlas</h1>
+          <p class="sub">東海エリアのクリエイターを、やわらかく探す。</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <label class="search">
+          <span class="sr">検索</span>
+          <input id="q" type="search" placeholder="名前 / タグ / 拠点 / 肩書きで検索" autocomplete="off" />
+        </label>
+
+        <div class="filters">
+          <label>
+            <span class="label">拠点</span>
+            <select id="base"></select>
+          </label>
+          <label>
+            <span class="label">肩書き</span>
+            <select id="role"></select>
+          </label>
+          <label>
+            <span class="label">タグ</span>
+            <select id="tag"></select>
+          </label>
+          <label>
+            <span class="label">並び</span>
+            <select id="sort">
+              <option value="kana">あいうえお</option>
+              <option value="manual">手動</option>
+              <option value="updated">更新</option>
+            </select>
+          </label>
+
+          <button id="reset" class="btn" type="button">リセット</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="meta-row">
+      <p id="count" class="count"></p>
+      <p class="note">カードを押すと Notion の詳細ページが開きます。</p>
+    </div>
+
+    <section id="grid" class="grid" aria-label="クリエイター一覧"></section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p class="muted">© Tokai Creative Atlas</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
