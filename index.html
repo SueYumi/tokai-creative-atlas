@@ -4,38 +4,21 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Tokai Creative Atlas</title>
-  <meta name="description" content="東海エリアのクリエイターを、やわらかく探す。" />
+  <meta name="description" content="東海エリアのクリエイターとつくる。" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="wrap">
-      <div class="top">
-        <div class="titleRow">
-          <div class="mark" aria-hidden="true"></div>
-          <div>
-            <h1>Tokai Creative Atlas</h1>
-            <p class="sub">東海エリアのクリエイターを、やわらかく探す。</p>
-          </div>
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>Tokai Creative Atlas</h1>
+          <p class="sub">東海エリアのクリエイターとつくる。</p>
         </div>
-
-        <nav class="nav">
-          <a href="#" aria-disabled="true">Profile</a>
-          <a href="#" aria-disabled="true">Artworks</a>
-          <a href="#" aria-disabled="true">Writing+note</a>
-          <a href="#" aria-disabled="true">Service</a>
-          <a href="#" aria-disabled="true">Contact</a>
-        </nav>
       </div>
 
-      <div class="rule"></div>
-
-      <div class="noiseRow">
-        <span class="noiseLabel">NOISE LEVEL</span>
-        <input id="noise" type="range" min="0" max="100" value="25" />
-      </div>
-
-      <div class="controls">
+      <div class="controls" role="search">
         <label class="search">
           <span class="sr">検索</span>
           <input id="q" type="search" placeholder="名前 / タグ / 拠点 / 肩書きで検索" autocomplete="off" />
@@ -66,8 +49,6 @@
           <button id="reset" class="btn" type="button">リセット</button>
         </div>
       </div>
-
-      <div class="rule soft"></div>
     </div>
   </header>
 
